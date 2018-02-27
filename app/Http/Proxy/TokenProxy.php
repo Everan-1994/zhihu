@@ -29,6 +29,28 @@ class TokenProxy
         ], 421);
     }
 
+    public function logout()
+    {
+        $user = auth()->guard('api')->user();
+
+        $accessToken = $user->token();
+
+        app('db')->table('oauth_refresh_tokens')
+            ->where('access_token_id', $accessToken->id)
+            ->update([
+                'revoked' => true
+            ]);
+
+        app('cookie')->forget('refreshToken');
+
+        $accessToken->revoke();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'logout success!'
+        ], 204);
+    }
+
     public function proxy($grantType, array $data = [])
     {
         $data = array_merge($data, [

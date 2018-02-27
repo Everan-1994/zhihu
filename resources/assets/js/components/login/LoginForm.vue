@@ -46,15 +46,17 @@
         methods: {
             login() {
                 let _this = this;
-                let formdata = {
-                    email: _this.email,
-                    password: _this.password
-                };
-                axios.post('/api/login', formdata).then(response => {
-                    // console.log(response.data);
-                    JWT.steToken(response.data.access_token);
-                }).catch(error => {
-                    console.log(error.response.data);
+                this.$validator.validateAll().then((result) => {
+                    if (result) {
+                        let formdata = {
+                            email: _this.email,
+                            password: _this.password
+                        };
+                        _this.$store.dispatch('loginRequest', formdata).then(response => {
+                            // console.log(response);
+                            _this.$router.push({'name': 'profile'});
+                        });
+                    }
                 });
             }
         }

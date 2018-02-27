@@ -9,8 +9,14 @@
 
 <script>
     import TopMenu from './common/TopMenu';
+    import JWT from './../helpers/jwt';
 
     export default {
+        created () {
+            if (JWT.getToken()) {
+                this.$store.dispatch('setAuthUser');
+            }
+        },
         components: {
             TopMenu
         }
